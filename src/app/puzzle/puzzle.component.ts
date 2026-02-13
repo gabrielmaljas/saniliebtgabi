@@ -35,6 +35,7 @@ export class PuzzleComponent implements OnInit {
   draggedPiece: PuzzlePiece | null = null;
   selectedPiece: PuzzlePiece | null = null; // For mobile tap-to-swap
   showSuccessMessage = false;
+  valentineImageUrl = 'assets/valentine-image.jpg';
   
   // Instagram Reels Level state
   showReels = false;

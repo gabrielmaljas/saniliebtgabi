@@ -40,7 +40,6 @@
 }
 
 .puzzle-piece {
-  background-image: url('/assets/valentine-image.jpg');
   background-size: 300% 300%;
   border: 2px solid #f8d7e8;
   border-radius: 8px;
@@ -87,7 +86,6 @@
 .completed-image {
   width: min(90vw, 500px);
   height: min(90vw, 500px);
-  background-image: url('/assets/valentine-image.jpg');
   background-size: cover;
   background-position: center;
   border-radius: 15px;

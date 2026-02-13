@@ -57,6 +57,7 @@
         *ngFor="let piece of puzzlePieces"
         class="puzzle-piece"
         [class.selected]="isPieceSelected(piece)"
+        [style.background-image]="'url(' + valentineImageUrl + ')'"
         [style.background-position]="piece.imageUrl"
         draggable="true"
         (click)="onPieceTap(piece)"
@@ -67,7 +68,7 @@
     </div>
 
     <div class="success-container" *ngIf="showSuccessMessage">
-      <div class="completed-image"></div>
+      <div class="completed-image" [style.background-image]="'url(' + valentineImageUrl + ')'"></div>
       <h2 class="success-text">🎉 Geschafft! 🎉</h2>
     </div>
   </div>
