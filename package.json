@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "ng build --configuration production --base-href /saniliebtgabi/ && npx angular-cli-ghpages --dir=dist/valentine-puzzle/browser"
+    "deploy": "ng build --configuration production --base-href=/saniliebtgabi/ && npx angular-cli-ghpages --dir=dist/valentine-puzzle/browser"
   },
   "private": true,
   "dependencies": {
