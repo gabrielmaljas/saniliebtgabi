@@ -1,0 +1,218 @@
+<div class="puzzle-container">
+  <!-- Quiz Level -->
+  <div class="quiz-container" *ngIf="showQuiz">
+    <div class="header">
+      <h1>💝 Valentine's Quiz 💝</h1>
+      <p class="instructions">Beantworte die Frage richtig um fortzufahren!</p>
+    </div>
+    
+    <div class="quiz-content">
+      <div class="quiz-question">
+        <h2>Wie viele Tage sind wir schon zusammen?</h2>
+      </div>
+      
+      <div class="answer-options">
+        <button 
+          *ngFor="let option of answerOptions"
+          class="answer-option"
+          [class.selected]="selectedAnswer === option"
+          [class.correct]="quizAnswered && option === correctDays"
+          [class.wrong]="quizAnswered && selectedAnswer === option && option !== correctDays"
+          [disabled]="quizAnswered"
+          (click)="selectAnswer(option)">
+          {{ option }} Tage
+        </button>
+      </div>
+      
+      <button 
+        *ngIf="!quizAnswered"
+        class="submit-button" 
+        [disabled]="selectedAnswer === null"
+        (click)="submitQuizAnswer()">
+        Antwort bestätigen
+      </button>
+      
+      <div class="quiz-feedback" *ngIf="quizAnswered">
+        <div class="feedback-correct" *ngIf="quizCorrect">
+          <h3>🎉 Richtig! 🎉</h3>
+          <p>Das Puzzle wird gleich geladen...</p>
+        </div>
+        <div class="feedback-wrong" *ngIf="!quizCorrect">
+          <h3>😢 Leider falsch!</h3>
+          <button class="retry-button" (click)="retryQuiz()">Nochmal versuchen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Puzzle Level -->
+  <div *ngIf="showPuzzle">
+    <div class="header">
+      <h1>💝 Valentine's Puzzle 💝</h1>
+      <p class="instructions">Tippe auf 2 Teile um sie zu tauschen!</p>
+    </div>
+
+    <div class="puzzle-grid" *ngIf="!showSuccessMessage">
+      <div 
+        *ngFor="let piece of puzzlePieces"
+        class="puzzle-piece"
+        [class.selected]="isPieceSelected(piece)"
+        [style.background-position]="piece.imageUrl"
+        draggable="true"
+        (click)="onPieceTap(piece)"
+        (dragstart)="onDragStart($event, piece)"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event, piece)"
+      ></div>
+    </div>
+
+    <div class="success-container" *ngIf="showSuccessMessage">
+      <div class="completed-image"></div>
+      <h2 class="success-text">🎉 Geschafft! 🎉</h2>
+    </div>
+  </div>
+
+  <!-- Instagram Reels Level -->
+  <div class="reels-container" *ngIf="showReels">
+    <div class="reel-wrapper">
+      <!-- Video Container -->
+      <div class="reel-video-container" 
+           (touchstart)="onTouchStart($event)" 
+           (touchend)="onTouchEnd($event)"
+           (click)="onSwipeUp()">
+        <video 
+          class="reel-video"
+          [src]="getCurrentReel().videoUrl"
+          [poster]="getCurrentReel().placeholder"
+          autoplay
+          loop
+          muted
+          playsinline>
+        </video>
+        
+        <!-- Swipe Up Indicator -->
+        <div class="swipe-indicator" [class.hide]="isSwipingUp">
+          <div class="swipe-arrow">
+            <span>⬆️</span>
+            <span>⬆️</span>
+            <span>⬆️</span>
+          </div>
+          <p>Swipe nach oben</p>
+        </div>
+        
+        <!-- Progress Indicator (top) -->
+        <div class="progress-bars">
+          <div 
+            *ngFor="let reel of reelVideos; let i = index"
+            class="progress-bar"
+            [class.active]="i <= currentReelIndex"
+            [class.current]="i === currentReelIndex">
+          </div>
+        </div>
+        
+        <!-- Caption (bottom) -->
+        <div class="reel-caption">
+          <p>{{ getCurrentReel().caption }}</p>
+          <small>{{ reelsWatched }}/{{ requiredReels }} Videos geschaut</small>
+        </div>
+        
+        <!-- Instagram-style UI elements -->
+        <div class="reel-sidebar">
+          <div class="sidebar-icon">
+            <span>❤️</span>
+            <small>123K</small>
+          </div>
+          <div class="sidebar-icon">
+            <span>💬</span>
+            <small>456</small>
+          </div>
+          <div class="sidebar-icon">
+            <span>📤</span>
+            <small>789</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Object Game Level -->
+  <div *ngIf="showHiddenObject">
+    <div class="header">
+      <h1>💝 Baby! Where the hell is your husband? 💝</h1>
+      <p class="instructions">Tippe auf das Bild, wo du ihn findest!</p>
+      <p class="attempts" *ngIf="wrongClicks > 0">
+        Versuche: {{ wrongClicks }} / {{ maxWrongClicks }}
+      </p>
+    </div>
+
+    <div class="hidden-object-container">
+      <div class="image-wrapper">
+        <img 
+          src="assets/hidden-object-image.jpg" 
+          alt="Wimmelbild"
+          class="hidden-object-image"
+          [class.found]="hiddenObjectFound"
+          (click)="onImageClick($event)"
+        />
+        
+        <!-- Click markers -->
+        <div 
+          *ngFor="let marker of clickMarkers"
+          class="click-marker"
+          [class.correct]="marker.correct"
+          [class.wrong]="!marker.correct"
+          [style.left.%]="marker.x"
+          [style.top.%]="marker.y">
+        </div>
+        
+        <!-- Hint box (shown after 3 wrong clicks) -->
+        <div class="hint-box" *ngIf="showHint && !hiddenObjectFound">
+          💡 Tipp: Schau genau in die Mitte des Bildes!
+        </div>
+        
+        <!-- Success overlay -->
+        <div class="found-overlay" *ngIf="hiddenObjectFound">
+          <div class="found-message">
+            <h2>🎉 Gefunden! 🎉</h2>
+            <p>Da ist er ja! 💕</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Valentine Question -->
+  <div class="question-modal" *ngIf="showQuestion && !answer">
+    <div class="modal-content">
+      <div class="hearts">💖</div>
+      <h2>Will you be my Valentine?</h2>
+      <div class="button-container">
+        <button class="yes-button" (click)="onYesClick()">Ja! 💕</button>
+        <button class="no-button" (click)="onNoClick()">Nein</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="answer-modal" *ngIf="answer === 'yes'">
+    <div class="modal-content celebration">
+      <div class="hearts-animation">
+        <span>❤️</span>
+        <span>💕</span>
+        <span>💖</span>
+        <span>💗</span>
+        <span>💝</span>
+      </div>
+      <h2>Jipiiiiieee! 😊</h2>
+      <p>Ich liebe dich! ❤️</p>
+      <button class="reset-button" (click)="resetPuzzle()">Nochmal spielen</button>
+    </div>
+  </div>
+
+  <div class="answer-modal" *ngIf="answer === 'no'">
+    <div class="modal-content">
+      <h2>😢</h2>
+      <p>:(?</p>
+      <button class="reset-button" (click)="resetPuzzle()">Nochmal versuchen</button>
+    </div>
+  </div>
+</div>
